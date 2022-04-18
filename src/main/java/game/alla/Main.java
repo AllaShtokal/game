@@ -44,7 +44,7 @@ public class Main {
                 System.out.println(grid);
             }
             System.out.println(hitResult);
-        } while (!grid.getAllAliveSHips().isEmpty());
+        } while (!grid.getAllAliveShips().isEmpty());
         System.out.println(END_GAME);
 
 

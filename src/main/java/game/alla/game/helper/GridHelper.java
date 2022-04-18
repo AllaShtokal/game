@@ -24,12 +24,19 @@ public class GridHelper {
     public static final Random random = new Random();
 
     public static Set<GridPoint> generateEmptyGridCoordinates(int start, int size, char startChar, char endChar) {
-        final Set<Integer> numbers = IntStream.rangeClosed(start, size).boxed().collect(Collectors.toSet());
-        final Set<String> letters = IntStream.rangeClosed(startChar, endChar).mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toSet());
+        final Set<Integer> numbers = IntStream.rangeClosed(start, size)
+                .boxed()
+                .collect(Collectors.toSet());
+
+        final Set<String> letters = IntStream.rangeClosed(startChar, endChar)
+                .mapToObj(c -> String.valueOf((char) c))
+                .collect(Collectors.toSet());
+
         return numbers.stream()
                 .map(n -> letters.stream()
                         .map(l -> new GridPoint(new Point(n, l), StatusForUser.UNKNOWN, true))
-                        .collect(Collectors.toSet())).flatMap(Collection::stream)
+                        .collect(Collectors.toSet()))
+                .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
     }
 
@@ -37,12 +44,15 @@ public class GridHelper {
     public static String hit(Grid grid, Point point) {
         GridPoint gpoint = grid.getGridPoints().stream()
                 .filter(gp -> gp.getPoint().equals(point))
-                .findAny().orElse(null);
+                .findAny()
+                .orElse(null);
         if (Objects.nonNull(gpoint)) {
             if (StatusForUser.getKnownStatuses().contains(gpoint.getStatusForUser())) {
                 return gpoint.getStatusForUser().name();
             } else {
-                Optional<Ship> any = grid.getShips().stream().filter(s -> s.getPoints().contains(point)).findAny();
+                Optional<Ship> any = grid.getShips().stream()
+                        .filter(s -> s.getPoints().contains(point))
+                        .findAny();
                 if (any.isPresent()) {
                     updateGrid(grid, any.get(), gpoint);
                     return gpoint.getStatusForUser().name();
@@ -61,7 +71,8 @@ public class GridHelper {
         Set<GridPoint> shipGridPoints = ship.getGridPoints();
         if (ifToBeSunk(shipGridPoints)) {
             Set<Point> pointsAroundShip = getPointsAroundShip(ship.getPoints());
-            grid.getGridPoints().stream().filter(p -> pointsAroundShip.contains(p.getPoint()))
+            grid.getGridPoints().stream()
+                    .filter(p -> pointsAroundShip.contains(p.getPoint()))
                     .forEach(p -> p.setStatusForUser(StatusForUser.MISS));
             shipGridPoints.forEach(p -> p.setStatusForUser(StatusForUser.SUNK));
             ship.setIsAlive(false);
@@ -73,15 +84,16 @@ public class GridHelper {
 
     private static boolean ifToBeSunk(Set<GridPoint> shipGridPoints) {
         return shipGridPoints.stream()
-                .filter(p -> p.getStatusForUser().equals(StatusForUser.HIT)).collect(Collectors.toSet()).size() == shipGridPoints.size() - 1;
+                .filter(p -> p.getStatusForUser().equals(StatusForUser.HIT))
+                .collect(Collectors.toSet()).size() == shipGridPoints.size() - 1;
     }
 
     public static Set<Point> getPointsAroundShip(Set<Point> points) {
         return points.stream()
                 .map(GridHelper::getPointsAroundPoint)
-                .collect(Collectors.toSet())
-                .stream().flatMap(Set::stream).collect(Collectors.toSet())
-                .stream().filter(GridHelper::isValidPoint).collect(Collectors.toSet());
+                .flatMap(Set::stream)
+                .filter(GridHelper::isValidPoint)
+                .collect(Collectors.toSet());
     }
 
 

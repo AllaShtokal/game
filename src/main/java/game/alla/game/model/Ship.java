@@ -10,20 +10,23 @@ import java.util.stream.Collectors;
 @Setter
 public class Ship {
 
-    Grid grid;
-    Set<Point> points;
-    Boolean isAlive = true;
+    private Grid grid;
+    private Set<Point> points;
+    private Boolean isAlive = true;
 
     public Ship(Set<Point> points) {
         this.points = points;
     }
 
     public  Set<GridPoint> getGridPoints() {
-        return grid.getGridPoints().stream().filter(gp -> points.contains(gp.getPoint())).collect(Collectors.toSet());
+        return grid.getGridPoints().stream()
+                .filter(gp -> points.contains(gp.getPoint()))
+                .collect(Collectors.toSet());
     }
 
     public boolean isShipValid() {
-        return this.getPoints().stream().allMatch(p -> grid.isGridPointAvailable(p));
+        return this.getPoints().stream()
+                .allMatch(p -> grid.isGridPointAvailable(p));
     }
 
 }

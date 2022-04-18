@@ -14,8 +14,8 @@ import static game.alla.game.helper.GridHelper.*;
 @Getter
 public class Grid implements GridInterface {
 
-    Set<GridPoint> gridPoints;
-    List<Ship> ships = new ArrayList<>();
+    private Set<GridPoint> gridPoints;
+    private List<Ship> ships = new ArrayList<>();
 
     public Grid(Set<GridPoint> gridPoints) {
         this.gridPoints = gridPoints;
@@ -27,25 +27,37 @@ public class Grid implements GridInterface {
         str.append("  ");
         str.append(IntStream.rangeClosed(START_CHAR, END_CHAR)
                 .mapToObj(c -> String.valueOf((char) c))
-                .sorted().collect(Collectors.toList()).stream()
-                .map(Object::toString).collect(Collectors.joining("  "))).append("\n");
-        Set<Integer> numbers = IntStream.rangeClosed(START, SIZE).boxed().collect(Collectors.toSet());
+                .sorted()
+                .map(Object::toString)
+                .collect(Collectors.joining("  ")))
+                .append("\n");
+
+        Set<Integer> numbers = IntStream.rangeClosed(START, SIZE)
+                .boxed()
+                .collect(Collectors.toSet());
 
         numbers.forEach(n ->
                 str.append(n).append(this.getGridPoints().stream()
                         .filter(gp -> gp.getPoint().getX().equals(n))
-                        .sorted(Comparator.comparingInt(p -> p.getPoint().getY().charAt(0)))
-                        .map(gpoint -> gpoint.getStatusForUser().getValue()).collect(Collectors.joining())).append("\n")
+                        .sorted(Comparator.comparingInt(gp -> gp.getPoint().getY().charAt(0)))
+                        .map(gp -> gp.getStatusForUser().getValue())
+                        .collect(Collectors.joining()))
+                        .append("\n")
         );
         return str.toString();
     }
 
     Set<Point> getAvailablePoints() {
-        return this.gridPoints.stream().filter(GridPoint::getAvailableToPutShip).map(GridPoint::getPoint).collect(Collectors.toSet());
+        return this.gridPoints.stream()
+                .filter(GridPoint::getAvailableToPutShip)
+                .map(GridPoint::getPoint)
+                .collect(Collectors.toSet());
     }
 
-    public List<Ship> getAllAliveSHips() {
-        return ships.stream().filter(s -> s.getIsAlive().equals(true)).collect(Collectors.toList());
+    public List<Ship> getAllAliveShips() {
+        return ships.stream()
+                .filter(Ship::getIsAlive)
+                .collect(Collectors.toList());
     }
 
     public void addShip(Ship ship) {
@@ -61,7 +73,9 @@ public class Grid implements GridInterface {
         HashSet<Point> points = new HashSet<>(ship.getPoints());
         Set<Point> collect = GridHelper.getPointsAroundShip(points);
         collect.addAll(points);
-        this.getGridPoints().stream().filter(gp -> collect.contains(gp.getPoint())).forEach(gp -> gp.setAvailableToPutShip(false));
+        this.getGridPoints().stream()
+                .filter(gp -> collect.contains(gp.getPoint()))
+                .forEach(gp -> gp.setAvailableToPutShip(false));
     }
 
 
@@ -69,7 +83,8 @@ public class Grid implements GridInterface {
         return this.getGridPoints().stream()
                 .filter(gp -> gp.getPoint().equals(point))
                 .findFirst()
-                .map(GridPoint::getAvailableToPutShip).orElse(false);
+                .map(GridPoint::getAvailableToPutShip)
+                .orElse(false);
     }
 
 
@@ -82,7 +97,6 @@ public class Grid implements GridInterface {
         return getAvailableRandomShipPointSetList(size, random.nextBoolean());
     }
 
-    @Override
     public List<Set<Point>> getAvailableRandomShipPointSetList(final int size, final boolean isHorizontal) {
         Set<Point> availablePoints = this.getAvailablePoints();
         if (availablePoints.size() < size) {
@@ -90,7 +104,9 @@ public class Grid implements GridInterface {
         }
         List<Set<Point>> collect = availablePoints.stream()
                 .map(point -> generateSingleShipPointsSet(availablePoints, point, isHorizontal, size))
-                .filter(s -> !s.isEmpty()).distinct().collect(Collectors.toList());
+                .filter(s -> !s.isEmpty())
+                .distinct()
+                .collect(Collectors.toList());
         if (collect.isEmpty()) {
             throw new NoSpaceException();
         }
@@ -100,9 +116,8 @@ public class Grid implements GridInterface {
     private Set<Point> generateSingleShipPointsSet(Set<Point> availablePoints, Point startPoint, boolean isHorizontal, int size) {
         Set<Point> pointsSet = new LinkedHashSet<>();
         pointsSet.add(startPoint);
-        int i = START;
         int incremented;
-        while (i < size) {
+        for (int i = START; i < size; i++) {
             incremented = isHorizontal ? (startPoint.getY().charAt(0)) + i : startPoint.getX() + i;
             if (!isOutOfRange(incremented, isHorizontal)) {
                 Point e = isHorizontal ? new Point(startPoint.getX(), String.valueOf((char) incremented)) : new Point(incremented, startPoint.getY());
@@ -110,7 +125,6 @@ public class Grid implements GridInterface {
                     pointsSet.add(e);
                 }
             }
-            i++;
         }
         return pointsSet.size() == size ? pointsSet : Collections.emptySet();
 
