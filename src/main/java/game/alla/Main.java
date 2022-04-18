@@ -26,17 +26,18 @@ public class Main {
         System.out.println(START_GAME + sizes.size() + SHIPS_ON_A_GRID);
         do {
             Integer x = null;
+            String y = null;
             while (Objects.isNull(x)) {
-                System.out.println("Input x [1...10]: ");
+                System.out.println("Input coordinate,Ex. 2B : ");
                 try {
-                    x = sc.nextInt();
-                } catch (InputMismatchException e) {
+                    String input = sc.next();
+                    x = Integer.parseInt(String.valueOf(input.charAt(0)));
+                    y = String.valueOf(input.charAt(1)).toUpperCase(Locale.ROOT);
+
+                } catch (NumberFormatException e) {
                     System.out.println(NO_SUCH_POINT);
-                    sc.next();
                 }
             }
-            System.out.println("Input y [A...J]: ");
-            String y = String.valueOf(sc.next().charAt(0)).toUpperCase(Locale.ROOT);
             String hitResult = hit(grid, new Point(x, y));
 
             if (!hitResult.equals(NO_SUCH_POINT)) {
