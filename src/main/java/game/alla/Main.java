@@ -13,7 +13,7 @@ import static game.alla.game.helper.GridHelper.*;
 public class Main {
 
     public static final String START_GAME = "****** Start of the game: ";
-    public static final String SHIPS_ON_A_GRID = "ships on a grid *****";
+    public static final String SHIPS_ON_A_GRID = " ships on a grid *****";
     public static final String END_GAME = "****** End of the game: you have sunk all of the ships!  *****";
 
     public static void main(String[] args) {
