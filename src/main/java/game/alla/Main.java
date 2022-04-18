@@ -27,14 +27,19 @@ public class Main {
         do {
             Integer x = null;
             String y = null;
-            while (Objects.isNull(x)) {
+            while (Objects.isNull(x) || Objects.isNull(y)) {
                 System.out.println("Input coordinate,Ex. 2B : ");
                 try {
-                    String input = sc.next();
-                    x = Integer.parseInt(String.valueOf(input.charAt(0)));
-                    y = String.valueOf(input.charAt(1)).toUpperCase(Locale.ROOT);
+                    String input = sc.nextLine().replaceAll("\\s+", "");
+                    if (input.startsWith("10")) {
+                        x = SIZE;
+                        y = String.valueOf(input.charAt(2)).toUpperCase(Locale.ROOT);
+                    } else {
+                        x = Integer.parseInt(String.valueOf(input.charAt(0)));
+                        y = String.valueOf(input.charAt(1)).toUpperCase(Locale.ROOT);
+                    }
 
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
                     System.out.println(NO_SUCH_POINT);
                 }
             }
