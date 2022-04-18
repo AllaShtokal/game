@@ -27,7 +27,7 @@ public class Main {
         do {
             Integer x = null;
             while (Objects.isNull(x)) {
-                System.out.println("x: ");
+                System.out.println("Input x [1...10]: ");
                 try {
                     x = sc.nextInt();
                 } catch (InputMismatchException e) {
@@ -35,7 +35,7 @@ public class Main {
                     sc.next();
                 }
             }
-            System.out.println("y: ");
+            System.out.println("Input y [A...J]: ");
             String y = String.valueOf(sc.next().charAt(0)).toUpperCase(Locale.ROOT);
             String hitResult = hit(grid, new Point(x, y));
 
